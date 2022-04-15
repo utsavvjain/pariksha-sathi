@@ -3,10 +3,17 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import 'tw-elements';
+import {createStore} from 'redux'
+import { Provider } from 'react-redux';
+import ParikhaSathiReducer from './reducers'
 
+const reduxStore=createStore(ParikhaSathiReducer);
 ReactDOM.render(
   <React.StrictMode>
+    <Provider store={reduxStore}>
     <App />
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );
