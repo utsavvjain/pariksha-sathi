@@ -13,6 +13,7 @@ import com.pariksha.sathi.pariksha_sathi.security.services.UserDetailServiceImpl
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -26,13 +27,19 @@ public class AuthTokenFilter extends OncePerRequestFilter{
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
                 String jwt=parseJwt(request);
-                if(jwt!=null && jwtUtils.validateJwtToken(jwt)){
-                    String username=jwtUtils.getUsernameFromToken(jwt);
-                    UserDetail userDetail=userDetailService.loadUserByUsername(username);
-                    UsernamePasswordAuthenticationToken auth=new UsernamePasswordAuthenticationToken(userDetail, null);
-                    SecurityContextHolder.getContext().setAuthentication(auth);                    
+                try{
+                    if(jwt!=null && jwtUtils.validateJwtToken(jwt)){
+                        String username=jwtUtils.getUsernameFromToken(jwt);                    
+                        UserDetail userDetail=userDetailService.loadUserByUsername(username);
+                        UsernamePasswordAuthenticationToken auth=new UsernamePasswordAuthenticationToken(userDetail, null,userDetail.getAuthorities());
+                        auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        SecurityContextHolder.getContext().setAuthentication(auth);                    
+                    }
+    
+                }catch(Exception e){
+                    System.out.println(e.getMessage());
                 }
-                filterChain.doFilter(request, response);
+                filterChain.doFilter(request,response);
     }
     private String parseJwt(HttpServletRequest httpServletRequest){
         String headerAuth=httpServletRequest.getHeader("Authorization");

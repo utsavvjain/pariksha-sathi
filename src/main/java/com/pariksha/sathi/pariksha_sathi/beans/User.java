@@ -1,6 +1,7 @@
 package com.pariksha.sathi.pariksha_sathi.beans;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -11,21 +12,30 @@ public class User {
     private String id;
     private String username;
     private String password;
-    private List<String> subjects;
+    private Map<String,Boolean> subjects;
+    private Map<String,List<Integer>> responses;
 
     public String getId() {
         return this.id;
+    }
+
+    public Map<String,List<Integer>> getResponse() {
+        return responses;
+    }
+
+    public void setResponse(Map<String,List<Integer>> responses) {
+        this.responses = responses;
     }
 
     public String getUsername() {
         return username;
     }
 
-    public List<String> getSubjects() {
+    public Map<String,Boolean> getSubjects() {
         return subjects;
     }
 
-    public void setSubjects(List<String> subjects) {
+    public void setSubjects(Map<String,Boolean> subjects) {
         this.subjects = subjects;
     }
 

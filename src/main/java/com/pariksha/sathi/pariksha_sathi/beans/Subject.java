@@ -9,25 +9,17 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Subject {
     @Id
     private String id;
-    private String subjectCode;
     private String subjectName;
     private List<Question> questions;
-    private List<String> answers;
+    private List<Integer> answers;
 
-    public Subject(String subjectCode, String subjectName, List<Question> questions, List<String> answers) {
-        this.subjectCode = subjectCode;
+    public Subject( String subjectName, List<Question> questions, List<Integer> answers) {
         this.subjectName = subjectName;
         this.questions = questions;
         this.answers = answers;
     }
 
-    public void setSubjectCode(String subjectCode) {
-        this.subjectCode = subjectCode;
-    }
 
-    public String getSubjectCode() {
-        return this.subjectCode;
-    }
 
     public void setSubjectName(String subjectName) {
         this.subjectName = subjectName;
@@ -41,15 +33,15 @@ public class Subject {
         this.questions = questions;
     }
 
-    public List<Question> getOptions() {
+    public List<Question> getQuestions() {
         return this.questions;
     }
 
-    public void setAnswers(List<String> answers) {
+    public void setAnswers(List<Integer> answers) {
         this.answers = answers;
     }
 
-    public List<String> getAnswers() {
+    public List<Integer> getAnswers() {
         return this.answers;
     }
 }
