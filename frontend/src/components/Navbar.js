@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-export default function Navbar() {
+export default function Navbar(props) {
   return (
     <nav class="relative flex flex-wrap items-center justify-between px-2 py-3 bg-white bg-opacity-40 mb-3 z-40 h-15 shadow-lg">
       <div class="container px-4 mx-auto flex flex-wrap items-center justify-between">
@@ -17,9 +17,16 @@ export default function Navbar() {
               </Link>
             </li>
             <li class="nav-item">
-              <Link  class="text-sm font-bold leading-relaxed inline-block mr-5 py-2 whitespace-nowrap uppercase text-black hover:text-gray-700" >
+              <div class="text-sm font-bold leading-relaxed inline-block mr-5 py-2 whitespace-nowrap uppercase text-black hover:text-gray-700" onClick={() => {
+                localStorage.removeItem("login_details")
+                props.dispatch({
+                  type: "LOGGED_IN",
+                  payload: false
+                })
+
+              }}>
                 Logout
-              </Link>
+              </div>
             </li>
           </ul>
         </div>

@@ -34,7 +34,7 @@ function App(props) {
   }
   return (
     <BrowserRouter>
-    <Navbar/>
+    <Navbar dispatch={props.dispatch}/>
       <Routes>
         <Route path="/"  element={<Dashboard name={name}/>} />
         <Route path="/test/:subject"  element={<Test/>} />

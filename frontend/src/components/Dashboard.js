@@ -1,6 +1,9 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
 import WaitScrren from './WaitScreen';
+import { CircularProgressbar } from 'react-circular-progressbar';
+import { buildStyles } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
 function SubjectCards(props) {
     return (
         <div class="block p-6 max-w-sm bg-slate-50 rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 my-2">
@@ -15,6 +18,17 @@ function SubjectCards(props) {
                 &nbsp;&nbsp;PC with an internet is mandatory for taking the Test.</p>
         </div>)
 }
+function ResultCard(props) {
+    let percentage = (((props.marks) / (props.outOff)) * 100).toFixed(2);
+    return (
+        <div class="block p-6 max-w-sm bg-slate-50 rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 my-2">
+            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{props.subject}</h5>
+            <p class="font-normal   text-gray-700 dark:text-gray-400 mb-3">You have scored <b>{props.marks}/{props.outOff}</b> in <b>{props.subject}</b></p>
+            <div class='w-28 h-28  mx-auto'>
+                <CircularProgressbar value={percentage} text={`${percentage}%`} /></div>
+        </div>)
+}
+
 function InformationPannel(props) {
     const [time, setTime] = React.useState()
     function showTime() {
@@ -60,6 +74,7 @@ function InformationPannel(props) {
 export default function Dashboard(props) {
     const [wait, setWait] = React.useState(true)
     const [subjects, setSubjects] = React.useState([])
+    const [result, setResult] = React.useState([])
     React.useEffect(() => {
         fetch('/api/user/subjects', {
             'method': 'GET',
@@ -67,9 +82,20 @@ export default function Dashboard(props) {
                 'authorization': 'Bearer ' + JSON.parse(localStorage.getItem("login_details")).JWT
             }
         }).then((response) => response.json()).then((response) => {
-            console.log(response)
             setSubjects(response.subjects)
-            setWait(false)
+            fetch('/api/user/result', {
+                'method': 'GET',
+                headers: {
+                    'authorization': 'Bearer ' + JSON.parse(localStorage.getItem("login_details")).JWT
+                }
+            }).then((response)=>{
+                setWait(false)
+                console.log(response)
+                return response.json()
+            }).then((response)=>{
+                console.log(response)
+                setResult(response);
+            })
         })
     }, [])
     if (wait) return (<WaitScrren />)
@@ -92,9 +118,28 @@ export default function Dashboard(props) {
                     </div>
                 </div>
                 <div class='px-10 py-5'>
-                    <h2 class="text-sm font-bold mb-2 text-gray-700 ">
+                    {
+                        result.length > 0 && <>
+                            <h2 class="text-2xl font-bold mb-2 text-black ">
+                            Test Results
+                            </h2>
+                            <div class='grid grid-cols-3'>
+                            {
+                                result.map((subject)=>{
+                                    return (
+                                        <ResultCard subject={subject.subjectName} marks={subject.marks} outOff={subject.outOff} />
+
+                                    )
+                                })
+                            }
+                            </div>
+                        </>
+                    }
+
+                    <h2 class="text-sm font-bold mt-10 mb-2 text-gray-700 ">
+                        *Once started, you cannot reattempt the test, In case of any failure drop a mail at support.
+
                     </h2>
-                    *Once started, you cannot reattempt the test, In case of any failure drop a mail at support.
                 </div>
             </div>
         </div>
